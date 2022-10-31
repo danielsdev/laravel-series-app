@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\EpisodesController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SeasonsController;
 use App\Http\Controllers\SeriesController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,20 +18,42 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/series');
-});
-
 Route::controller(SeriesController::class)->group(function () {
-    Route::get('series', 'index')->name('series.index');
-    Route::get('series/criar', 'create')->name('series.create');
-    Route::post('series/salvar', 'store')->name('series.store');
-    Route::get('series/{serie}/editar', 'edit')->name('series.edit');
-    Route::put('series/{serie}/atualizar', 'update')->name('series.update');
-    Route::delete('series/destroy/{serie}', 'destroy')
+    Route::get('/series', 'index')->name('series.index');
+    Route::get('/series/criar', 'create')->name('series.create');
+    Route::post('/series/salvar', 'store')->name('series.store');
+    Route::get('/series/{serie}/editar', 'edit')->name('series.edit');
+    Route::put('/series/{serie}/atualizar', 'update')->name('series.update');
+    Route::delete('/series/destroy/{serie}', 'destroy')
         ->name('series.destroy')
         ->whereNumber('serie');
 });
 
-Route::get('/series/{series}/seasons', [SeasonsController::class, 'index'])->name('seasons.index');
+//Route::resource('/series', SeriesController::class)
+//    ->except(['show']);
 
+Route::middleware('authenticator')->group(function () {
+    Route::get('/', function () {
+        return redirect('/series');
+    });
+
+    Route::get('/series/{series}/seasons', [SeasonsController::class, 'index'])
+        ->name('seasons.index');
+
+    Route::get('/seasons/{season}/episodes', [EpisodesController::class, 'index'])
+        ->name('episodes.index');
+    Route::post('/seasons/{season}/episodes', [EpisodesController::class, 'watched'])
+        ->name('episodes.watched');
+});
+
+Route::get('/login', [LoginController::class, 'index'])
+    ->name('login');
+Route::post('/login', [LoginController::class, 'signIn'])
+    ->name('sign.in');
+Route::get('/logout', [LoginController::class, 'signOut'])
+    ->name('sign.out');
+
+Route::get('/register', [UsersController::class, 'create'])
+    ->name('users.create');
+Route::post('/register', [UsersController::class, 'store'])
+    ->name('users.store');
