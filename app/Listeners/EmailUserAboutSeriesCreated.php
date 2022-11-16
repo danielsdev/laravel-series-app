@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\SeriesCreated as SeriesCreatedEvent;
+use App\Mail\SeriesCreated;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
