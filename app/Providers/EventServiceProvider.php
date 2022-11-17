@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\SeriesCreated;
+use App\Events\SeriesDeleted;
 use App\Listeners\EmailUserAboutSeriesCreated;
+use App\Listeners\FileSeriesDeleted;
 use App\Listeners\LogSeriesCreated;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -24,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
         SeriesCreated::class => [
             EmailUserAboutSeriesCreated::class,
             LogSeriesCreated::class,
+        ],
+        SeriesDeleted::class => [
+            FileSeriesDeleted::class,
         ]
     ];
 
